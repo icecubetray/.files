@@ -66,15 +66,21 @@ thanks() {
 	echo "You're welcome."
 }
 
+__ufw_setup_usage() {
+	echo "Usage: ufw_setup [web|webplain|ssh|tox|git|whois]";
+}
 ufw_setup() {
 	if [ $ROOT == 1 ] ; then
 		if [ $# == 0 ] ; then
-			echo "TCP: 53";
-			ufw allow out 53/tcp
-			echo "UDP: 53";
-			ufw allow out 53/udp
+			__ufw_setup_usage;
 		else
 			case "$1" in
+				dns)
+					echo "TCP: 53";
+					ufw allow out 53/tcp
+					echo "UDP: 53";
+					ufw allow out 53/udp
+					;;
 				web)
 					ufw_setup;
 					echo "TCP: 443";
@@ -110,11 +116,12 @@ ufw_setup() {
 					ufw allow out 43/tcp
 					;;
 				*)
-					echo "Usage: ufw_setup [web|webplain|ssh|tox|git]";
+					__ufw_setup_usage;
 					return;
 			esac
 		fi
 	else
+		__ufw_setup_usage;
 		echo "You need to be root.";
 	fi
 }
