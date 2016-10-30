@@ -82,7 +82,7 @@ ufw_setup() {
 					ufw allow out 53/udp
 					;;
 				web)
-					ufw_setup;
+					ufw_setup dns;
 					echo "TCP: 443";
 					ufw allow out 443/tcp
 					;;
@@ -92,12 +92,12 @@ ufw_setup() {
 					ufw allow out 80/tcp
 					;;
 				ssh)
-					ufw_setup;
+					ufw_setup dns;
 					echo "TCP: 22";
 					ufw allow out 22/tcp
 					;;
 				tox)
-					ufw_setup;
+					ufw_setup dns;
 					echo "TCP: 443";
 					ufw allow out 443/tcp
 					echo "TCP: 3389";
@@ -106,12 +106,12 @@ ufw_setup() {
 					ufw allow out 33445/tcp
 					;;
 				git)
-					ufw_setup;
+					ufw_setup dns;
 					echo "TCP: 443";
 					ufw allow out 443/tcp
 					;;
 				whois)
-					ufw_setup;
+					ufw_setup dns;
 					echo "TCP: 43";
 					ufw allow out 43/tcp
 					;;
