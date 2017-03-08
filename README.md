@@ -25,13 +25,13 @@ Dependencies | **numlockx**, [**redshift**](http://jonls.dk/redshift/), [**enlig
 Property | Value
 ---|---
 Location | ~/Scripts
-Dependencies | **bashrc.func.sh**
+Dependencies | `ROOT`, `VERBOSE`, `BASHRC_SCRIPT_DIR`, **bashrc.func.sh**
 
 ###bashrc.func.sh
 Property | Value
 ---|---
 Location | ~/Scripts
-Dependencies | *function-dependent*
+Dependencies | `ROOT`, `VERBOSE`, *function-dependent*
 
 ###codeblocks_theme.conf
 Property | Value
