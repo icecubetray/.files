@@ -1,45 +1,46 @@
-export PROMPT_COMMAND=__prompt_command
+export PROMPT_COMMAND=__prompt_command;
 __prompt_command() {
-	local EXITCODE=$?
-	local COLOR_EXITCODE=""
+	EXITCODE=$?;
+	COLOR_EXITCODE="";
 
 	if [ $EXITCODE != 0 ]; then
-		COLOR_EXITCODE="\[\e[31;1m\]"
+		COLOR_EXITCODE="\[\e[31;1m\]";
 	else
-		COLOR_EXITCODE="\[\e[32m\]"
+		COLOR_EXITCODE="\[\e[32m\]";
 	fi
 
-	PS1="\[\e[0m\][$COLOR_EXITCODE`printf %3s $EXITCODE`\[\e[0m\]] "
+	PS1="\[\e[0m\][$COLOR_EXITCODE`printf %3s $EXITCODE`\[\e[0m\]] ";
 
-	local COLOR_RESET="\[\e[0m\]"
-	local COLOR_HOST="\[\e[35;1m\]"
-	local COLOR_CWD="\[\e[37;1m\]"
-	local COLOR_USER="";
-	local COLOR_GIT="\[\e[37;2m\]";
-	local COLOR_GIT_BRANCH="\[\e[31m\]";
-	local COLOR_GIT_COMMIT=$COLOR_GIT;
-	local COLOR_GIT_DATE=$COLOR_GIT;
-	local COLOR_GIT_UNSTAGED="\[\e[31m\]";
-	local COLOR_GIT_STAGED="\[\e[32m\]";
+	COLOR_RESET="\[\e[0m\]"
+	COLOR_HOST="\[\e[35;1m\]"
+	COLOR_CWD="\[\e[37;1m\]"
+	COLOR_USER="";
+	COLOR_GIT="\[\e[37;2m\]";
+	COLOR_GIT_BRANCH="\[\e[31m\]";
+	COLOR_GIT_COMMIT=$COLOR_GIT;
+	COLOR_GIT_DATE=$COLOR_GIT;
+	COLOR_GIT_UNSTAGED="\[\e[31m\]";
+	COLOR_GIT_STAGED="\[\e[32m\]";
+	COLOR_SUFFIX="\[\e[36m\]";
 
-	local COLOR_SUFFIX="\[\e[36m\]";
-	local SUFFIX="";
+	SUFFIX="";
 
 	if [ $(id -u) != 0 ]; then
-		COLOR_USER="\[\e[34;1m\]"
-		SUFFIX="\$"
+		COLOR_USER="\[\e[34;1m\]";
+		SUFFIX="\$";
 	else
-		COLOR_USER="\[\e[31;1m\]"
-		SUFFIX="#"
+		COLOR_USER="\[\e[31;1m\]";
+		SUFFIX="#";
 	fi
+	SUFFIX=" $COLOR_SUFFIX$SUFFIX$COLOR_RESET ";
 
-	PS1+="$COLOR_USER\u$COLOR_RESET@$COLOR_HOST\h$COLOR_RESET:$COLOR_CWD\w$COLOR_RESET"
+	PS1+="$COLOR_USER\u$COLOR_RESET@$COLOR_HOST\h$COLOR_RESET:$COLOR_CWD\w$COLOR_RESET";
 
 	if [ "$GIT_PROMPT" == "1" ]; then
-		local GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null);
+		GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null);
 		if [ $? == 0 ]; then
 			if [ -n "$GIT_BRANCH" ]; then
-				git update-index -q --ignore-submodules --refresh
+				git update-index -q --ignore-submodules --refresh;
 
 				DIFF_FILES=$(git diff-files --ignore-submodules -- 2> /dev/null | wc -l 2> /dev/null);
 				if [ -z "$DIFF_FILES" ]; then
@@ -52,7 +53,7 @@ __prompt_command() {
 				fi
 
 				if ([ $DIFF_FILES != "0" ] || [ $DIFF_INDEX != "0" ]); then
-					COLOR_GIT_BRANCH="\[\e[33m\]"
+					COLOR_GIT_BRANCH="\[\e[33m\]";
 
 					if [ $DIFF_FILES != "0" ]; then
 						DIFF_FILES=" $COLOR_RESET$COLOR_GIT_UNSTAGED$DIFF_FILES unstaged";
@@ -61,9 +62,9 @@ __prompt_command() {
 					fi
 
 					if [ $DIFF_INDEX != "0" ]; then
-						DIFF_INDEX=" $COLOR_RESET$COLOR_GIT_STAGED$DIFF_INDEX staged"
+						DIFF_INDEX=" $COLOR_RESET$COLOR_GIT_STAGED$DIFF_INDEX staged";
 					else
-						DIFF_INDEX=""
+						DIFF_INDEX="";
 					fi
 				else
 					COLOR_GIT_BRANCH="\[\e[32m\]";
@@ -73,11 +74,11 @@ __prompt_command() {
 
 				GIT_COMMIT=$(git log -n 1 --format="$COLOR_RESET$COLOR_GIT_COMMIT%h $COLOR_RESET$COLOR_GIT_DATE%ai");
 
-				PS1="\n$PS1 $COLOR_GIT($GIT_COMMIT $COLOR_RESET$COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\ngit repo $COLOR_SUFFIX$SUFFIX$COLOR_RESET ";
+				PS1="\n$PS1 $COLOR_GIT($GIT_COMMIT $COLOR_RESET$COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\ngit repo$SUFFIX";
 				return 0;
 			fi
 		fi
 	fi
 
-	PS1+=" $COLOR_SUFFIX$SUFFIX$COLOR_RESET ";
+	PS1+=$SUFFIX;
 }
