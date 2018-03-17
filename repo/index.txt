@@ -1,0 +1,8 @@
+.bash/todo.sh
+.bash_aliases
+.bash_functions
+.bash_logout
+.bash_profile
+.bash_prompt
+.bashrc
+.xinitrc
