@@ -1,3 +1,3 @@
 # .files
 
-Some configuration files (Bash/X11 for now).
+Configuration files for bash, git, and X11.
