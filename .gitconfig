@@ -1,0 +1,14 @@
+[core]
+	editor = nano
+	
+[credential]
+	helper = cache --timeout=3600
+
+[format]
+	pretty = ice
+	
+[include]
+	path = ~/.gitconfig_custom
+	
+[pretty]
+	ice = %C(white)Commit%Creset       %C(black white)%H%Creset%C(auto)%d%Creset%n%C(white)Date/time%Creset    %ai%n%C(white)Author%Creset       %an (%ce)%n%C(white)Message%Creset      %s%n%C(white)Signed%Creset       %G? %C(green bold)%GK%Creset%n
