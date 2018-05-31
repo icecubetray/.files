@@ -39,3 +39,10 @@ disasm() {
 
 	gdb -batch -ex "file '$1'" -ex "disassemble '$2'";
 }
+
+touchc() {
+	for arg in "$@"; do
+		touch "$arg.c" "$arg.h";
+		echo "$arg.c $arg.h";
+	done;
+}
