@@ -16,3 +16,4 @@
 [alias]
 	last = log -n 1 HEAD
 	current = rev-parse HEAD
+	re-sign = rebase --exec 'git commit --amend --no-edit -n -S' -i
