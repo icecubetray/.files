@@ -1,7 +1,7 @@
 export PROMPT_COMMAND=__prompt_command;
 __prompt_command() {
-	EXITCODE=$?;
-	COLOR_EXITCODE="";
+	local EXITCODE=$?;
+	local COLOR_EXITCODE="";
 
 	if [ $EXITCODE != 0 ]; then
 		COLOR_EXITCODE="\[\e[31;1m\]";
@@ -11,19 +11,22 @@ __prompt_command() {
 
 	PS1="\[\e[0m\][$COLOR_EXITCODE`printf %3s $EXITCODE`\[\e[0m\]] ";
 
-	COLOR_RESET="\[\e[0m\]"
-	COLOR_HOST="\[\e[35;1m\]"
-	COLOR_CWD="\[\e[37;1m\]"
-	COLOR_USER="";
-	COLOR_GIT="\[\e[37;2m\]";
-	COLOR_GIT_BRANCH="\[\e[31m\]";
-	COLOR_GIT_COMMIT=$COLOR_GIT;
-	COLOR_GIT_DATE=$COLOR_GIT;
-	COLOR_GIT_UNSTAGED="\[\e[31m\]";
-	COLOR_GIT_STAGED="\[\e[32m\]";
-	COLOR_SUFFIX="\[\e[36m\]";
+	local COLOR_RESET="\[\e[0m\]"
+	local COLOR_HOST="\[\e[35;1m\]"
+	local COLOR_CWD="\[\e[37;1m\]"
+	local COLOR_USER="";
+	local COLOR_GIT="\[\e[37;2m\]";
+	local COLOR_GIT_BRANCH="\[\e[0;31m\]";
+	local COLOR_GIT_AT="\[\e[0;37;2m\]";
+	local COLOR_GIT_COMMIT="\[\e[0;97m\]";
+	local COLOR_GIT_DATE=$COLOR_GIT;
+	local COLOR_GIT_UNSTAGED="\[\e[31m\]";
+	local COLOR_GIT_STAGED="\[\e[32m\]";
+	local COLOR_SUFFIX="\[\e[36m\]";
 
-	SUFFIX="";
+	local SUFFIX="";
+	local DIFF_FILES=;
+	local DIFF_INDEX=;
 
 	if [ $(id -u) != 0 ]; then
 		COLOR_USER="\[\e[34;1m\]";
@@ -53,28 +56,28 @@ __prompt_command() {
 				fi
 
 				if ([ $DIFF_FILES != "0" ] || [ $DIFF_INDEX != "0" ]); then
-					COLOR_GIT_BRANCH="\[\e[33m\]";
+					COLOR_GIT_BRANCH="\[\e[0;33m\]";
 
 					if [ $DIFF_FILES != "0" ]; then
-						DIFF_FILES=" $COLOR_RESET$COLOR_GIT_UNSTAGED$DIFF_FILES unstaged";
+						DIFF_FILES="$COLOR_RESET, $COLOR_GIT_UNSTAGED$DIFF_FILES unstaged";
 					else
 						DIFF_FILES="";
 					fi
 
 					if [ $DIFF_INDEX != "0" ]; then
-						DIFF_INDEX=" $COLOR_RESET$COLOR_GIT_STAGED$DIFF_INDEX staged";
+						DIFF_INDEX="$COLOR_RESET, $COLOR_GIT_STAGED$DIFF_INDEX staged";
 					else
 						DIFF_INDEX="";
 					fi
 				else
-					COLOR_GIT_BRANCH="\[\e[32m\]";
+					COLOR_GIT_BRANCH="\[\e[0;32m\]";
 					DIFF_FILES="";
 					DIFF_INDEX="";
 				fi
 
-				GIT_COMMIT=$(git log -n 1 --format="$COLOR_RESET$COLOR_GIT_COMMIT%h $COLOR_RESET$COLOR_GIT_DATE%ai");
+				local GIT_COMMIT_HASH=$(git rev-parse --short HEAD);
 
-				PS1="\n$PS1 $COLOR_GIT($GIT_COMMIT $COLOR_RESET$COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\ngit repo$SUFFIX";
+				PS1="\n$PS1 $COLOR_GIT($COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\n$COLOR_GIT_AT@$COLOR_GIT_COMMIT$GIT_COMMIT_HASH$COLOR_RESET$SUFFIX";
 				return 0;
 			fi
 		fi
