@@ -46,3 +46,16 @@ touchc() {
 		echo "$arg.c $arg.h";
 	done;
 }
+
+mvc() {
+	if [ $# -ne 2 ]; then
+		return 1;
+	else
+		if [ -f "$1.h" ]; then
+			mv "$1.h" "$2.h";
+		fi;
+		if [ -f "$1.c" ]; then
+			mv "$1.c" "$2.c";
+		fi;
+	fi;
+}
