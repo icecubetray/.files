@@ -35,6 +35,7 @@ source "$HOME/.bash_aliases";
 source "$HOME/.bash_functions";
 
 export GIT_PROMPT=1;
+export GIT_PROMPT_DEFAULT=on;
 source "$HOME/.bash_prompt";
 
 

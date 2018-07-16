@@ -40,48 +40,60 @@ __prompt_command() {
 	PS1+="$COLOR_USER\u$COLOR_RESET@$COLOR_HOST\h$COLOR_RESET:$COLOR_CWD\w$COLOR_RESET";
 
 	if [ "$GIT_PROMPT" == "1" ]; then
-		GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null);
-		if [ $? == 0 ]; then
-			if [ -n "$GIT_BRANCH" ]; then
-				git update-index -q --ignore-submodules --refresh;
+		local ENABLED=0;
 
-				DIFF_FILES=$(git diff-files --ignore-submodules -- 2> /dev/null | wc -l 2> /dev/null);
-				if [ -z "$DIFF_FILES" ]; then
-					DIFF_FILES="0";
-				fi
+		if [ "$GIT_PROMPT_DEFAULT" = "on" ]; then
+			if [ ! "$(git config prompt.enabled)" = "no" ]; then
+				ENABLED=1;
+			fi;
+		elif [ "$(git config prompt.enabled)" = "ice" ]; then
+			ENABLED=1;
+		fi;
 
-				DIFF_INDEX=$(git diff-index --ignore-submodules --cached --name-only HEAD -- 2> /dev/null | wc -l 2> /dev/null);
-				if [ -z "$DIFF_INDEX" ]; then
-					DIFF_INDEX="0";
-				fi
+		if [ $ENABLED -eq 1 ]; then
+			GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null);
+			if [ $? == 0 ]; then
+				if [ -n "$GIT_BRANCH" ]; then
+					git update-index -q --ignore-submodules --refresh;
 
-				if ([ $DIFF_FILES != "0" ] || [ $DIFF_INDEX != "0" ]); then
-					COLOR_GIT_BRANCH="\[\e[0;33m\]";
-
-					if [ $DIFF_FILES != "0" ]; then
-						DIFF_FILES="$COLOR_RESET, $COLOR_GIT_UNSTAGED$DIFF_FILES unstaged";
-					else
-						DIFF_FILES="";
+					DIFF_FILES=$(git diff-files --ignore-submodules -- 2> /dev/null | wc -l 2> /dev/null);
+					if [ -z "$DIFF_FILES" ]; then
+						DIFF_FILES="0";
 					fi
 
-					if [ $DIFF_INDEX != "0" ]; then
-						DIFF_INDEX="$COLOR_RESET, $COLOR_GIT_STAGED$DIFF_INDEX staged";
+					DIFF_INDEX=$(git diff-index --ignore-submodules --cached --name-only HEAD -- 2> /dev/null | wc -l 2> /dev/null);
+					if [ -z "$DIFF_INDEX" ]; then
+						DIFF_INDEX="0";
+					fi
+
+					if ([ $DIFF_FILES != "0" ] || [ $DIFF_INDEX != "0" ]); then
+						COLOR_GIT_BRANCH="\[\e[0;33m\]";
+
+						if [ $DIFF_FILES != "0" ]; then
+							DIFF_FILES="$COLOR_RESET, $COLOR_GIT_UNSTAGED$DIFF_FILES unstaged";
+						else
+							DIFF_FILES="";
+						fi
+
+						if [ $DIFF_INDEX != "0" ]; then
+							DIFF_INDEX="$COLOR_RESET, $COLOR_GIT_STAGED$DIFF_INDEX staged";
+						else
+							DIFF_INDEX="";
+						fi
 					else
+						COLOR_GIT_BRANCH="\[\e[0;32m\]";
+						DIFF_FILES="";
 						DIFF_INDEX="";
 					fi
-				else
-					COLOR_GIT_BRANCH="\[\e[0;32m\]";
-					DIFF_FILES="";
-					DIFF_INDEX="";
-				fi
 
-				local GIT_COMMIT_HASH=$(git rev-parse --short HEAD);
+					local GIT_COMMIT_HASH=$(git rev-parse --short HEAD);
 
-				PS1="\n$PS1 $COLOR_GIT($COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\n$COLOR_GIT_AT@$COLOR_GIT_COMMIT$GIT_COMMIT_HASH$COLOR_RESET$SUFFIX";
-				return 0;
-			fi
-		fi
-	fi
+					PS1="\n$PS1 $COLOR_GIT($COLOR_GIT_BRANCH$GIT_BRANCH$COLOR_RESET$DIFF_FILES$DIFF_INDEX$COLOR_GIT)$COLOR_RESET\n$COLOR_GIT_AT@$COLOR_GIT_COMMIT$GIT_COMMIT_HASH$COLOR_RESET$SUFFIX";
+					return 0;
+				fi;
+			fi;
+		fi;
+	fi;
 
 	PS1+=$SUFFIX;
 }
