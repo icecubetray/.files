@@ -15,5 +15,7 @@
 
 [alias]
 	last = log -n 1 HEAD
+	wt-pop = reset HEAD~1
+	wt-push = commit -a -S
 	current = rev-parse HEAD
 	re-sign = rebase --exec 'git commit --amend --no-edit -n -S' -i
