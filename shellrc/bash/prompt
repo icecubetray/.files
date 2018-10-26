@@ -1,4 +1,6 @@
-export PROMPT_COMMAND=__prompt_command;
+export GIT_PROMPT=1;
+export GIT_PROMPT_DEFAULT=on;
+
 __prompt_command() {
 	local EXITCODE=$?;
 	local COLOR_EXITCODE="";
@@ -97,3 +99,5 @@ __prompt_command() {
 
 	PS1+=$SUFFIX;
 }
+
+export PROMPT_COMMAND=__prompt_command;

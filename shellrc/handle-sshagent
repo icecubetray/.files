@@ -1,0 +1,19 @@
+# Check if we even have ssh-agent installed.
+if which ssh-agent >/dev/null 2>&1; then
+	# We do, now check if its variables are in the environment.
+	if [ -z "${SSH_AGENT_PID}" ]; then
+		# Nope, check if we already started an instance before.
+		TEMPFILE="/tmp/ssh-agent-${EUID}";
+		if [ -e "${TEMPFILE}.pid" -a -L "${TEMPFILE}" ]; then
+			# Yup, use it.
+			export SSH_AGENT_PID=`cat "${TEMPFILE}.pid"`;
+			export SSH_AUTH_SOCK=`readlink -f "${TEMPFILE}"`;
+		else
+			# Nope, start one.
+			if eval `env SHELL="${REAL_SHELL}" ssh-agent`; then
+				echo "${SSH_AGENT_PID}" > "${TEMPFILE}.pid";
+				ln -sf "${SSH_AUTH_SOCK}" "${TEMPFILE}";
+			fi;
+		fi;
+	fi;
+fi;

@@ -1,0 +1,35 @@
+mkcd() {
+	if [ ${#} -lt 1 ]; then
+		echo 'Usage: mkcd <dir>';
+		return 1;
+	fi;
+	mkdir -p "${@}" && cd "${@}";
+}
+
+disasm() {
+	if [ $# != 2 ] ; then
+		return 1;
+	fi
+
+	gdb -batch -ex "file '$1'" -ex "disassemble '$2'";
+}
+
+touchc() {
+	for arg in "$@"; do
+		touch "$arg"{.c,.h};
+		echo "$arg.c $arg.h";
+	done;
+}
+
+mvc() {
+	if [ $# -ne 2 ]; then
+		return 1;
+	else
+		if [ -f "$1.h" ]; then
+			mv "$1.h" "$2.h";
+		fi;
+		if [ -f "$1.c" ]; then
+			mv "$1.c" "$2.c";
+		fi;
+	fi;
+}

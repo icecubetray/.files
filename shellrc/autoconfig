@@ -1,0 +1,65 @@
+# Determine what shell we're dealing with.
+export REAL_SHELL REAL_SHELL_VERSION;
+if [ -n "${ZSH_VERSION}" ]; then
+	REAL_SHELL='zsh';
+	REAL_SHELL_VERSION="${ZSH_VERSION}";
+elif [ -n "${BASH_VERSION}" ]; then
+	REAL_SHELL='bash';
+	REAL_SHELL_VERSION="${BASH_VERSION}";
+else
+	REAL_SHELL='unknown';
+	REAL_SHELL_VERSION='unknown';
+	echo 'Unable to determine what shell you are using.' >&2;
+	return 1;
+fi;
+
+SHRCDIR=`readlink -f "${HOME}/.${REAL_SHELL}rc"`;
+export SHRCDIR=`dirname "${SHRCDIR}"`;
+
+
+
+
+login_shell() {
+	case ${REAL_SHELL} in
+		zsh)
+			if [[ -o login ]]; then
+				return 0;
+			fi;
+			;;
+		bash)
+			if shopt -o login_shell; then
+				return 0;
+			fi;
+			;;
+	esac;
+
+	return 1;
+}
+
+
+__source_exists() {
+	if [ -r "${1}" ]; then
+		. "${1}";
+	fi;
+}
+
+__source_exists_globshell() {
+	__source_exists "${SHRCDIR}/${1}";
+	__source_exists "${SHRCDIR}/${REAL_SHELL}/${1}";
+}
+
+
+
+
+if login_shell; then
+	__source_exists "${SHRCDIR}/handle-sshagent";
+fi;
+
+
+
+
+__source_exists_globshell 'aliases';
+__source_exists_globshell 'env';
+__source_exists_globshell 'functions';
+__source_exists_globshell 'prompt';
+__source_exists_globshell 'rc';

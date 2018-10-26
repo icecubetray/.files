@@ -1,0 +1,36 @@
+setopt PROMPT_SUBST
+
+__shellrc_zsh_check_exit() {
+	local RESULT=${?};
+	local COLOR='green';
+	if [ ${RESULT} -ne 0 ]; then
+		COLOR='red';
+	fi;
+
+	if [ "${1}" != 'rprompt' ]; then
+		local PAD='';
+		if [ ${RESULT} -lt 10 ]; then
+			PAD='  ';
+		elif [ ${RESULT} -lt 100 ]; then
+			PAD=' ';
+		fi;
+		echo "${PAD}%F{${COLOR}}${RESULT}%f";
+	elif [ ${RESULT} -ne 0 ]; then
+		echo '%F{red}boo!%f';
+	fi;
+}
+
+USER_COLOR='cyan';
+USER_FENCE='$';
+if [ ${EUID} -eq 0 ]; then
+	USER_COLOR='red';
+	USER_FENCE='#';
+fi;
+
+PROMPT="[%F{yellow}%D{%02H:%02M:%02S}%f|\$(__shellrc_zsh_check_exit)] %F{${USER_COLOR}}%n%f@%F{magenta}%m%f:%F{white}%~%f ${USER_FENCE} %b%s";
+RPROMPT='$(__shellrc_zsh_check_exit rprompt)'
+
+TMOUT=1;
+TRAPALRM() {
+	zle reset-prompt;
+}
