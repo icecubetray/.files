@@ -42,7 +42,7 @@ disasm() {
 
 touchc() {
 	for arg in "$@"; do
-		touch "$arg.c" "$arg.h";
+		touch "$arg"{.c,.h};
 		echo "$arg.c $arg.h";
 	done;
 }
