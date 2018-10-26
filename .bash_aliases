@@ -1,5 +1,6 @@
-alias ls='ls -l --color=auto --group-directories-first'
-alias nano='nano --tabsize=4 --autoindent --nowrap'
+alias ls='ls --color=auto --group-directories-first'
+alias ll='ls -l'
+alias nano='nano --tabsize=4 --autoindent --nowrap --linenumbers --trimblanks --nowrap'
 alias grep='grep --color=auto'
 alias watch='watch -c'
 alias less='less -x 4'
