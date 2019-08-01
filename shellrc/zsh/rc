@@ -3,7 +3,7 @@ HISTFILE=~/.histfile
 HISTSIZE=5000
 SAVEHIST=50000
 setopt appendhistory autocd
-unsetopt beep extendedglob notify
+unsetopt beep notify
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -11,4 +11,9 @@ zstyle :compinstall filename '/home/noot/.zshrc'
 
 autoload -Uz compinit
 compinit
+zstyle ':completion:*' menu select
 # End of lines added by compinstall
+
+if [ -r "${HOME}/.zshkeys" ]; then
+	. "${HOME}/.zshkeys";
+fi;
